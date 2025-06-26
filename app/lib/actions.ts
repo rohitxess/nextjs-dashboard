@@ -3,6 +3,8 @@ import { z } from 'zod';
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache'; // to clear the cache and trigger a new request 
 import { redirect } from 'next/navigation';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 const sql =  postgres(process.env.POSTGRES_URL!, { ssl: 'require'})
 
@@ -140,3 +142,23 @@ export async function createInvoice(prevState: State, formData: FormData) {
     revalidatePath('/dashboard/invoices');  
   }
 
+// authenticate function 
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData
+){
+  try{
+    await signIn('credentials', formData);
+  }catch(err){
+    if (err instanceof AuthError){
+      switch(err.type){
+        case 'CredentialsSignin':
+          return 'Invalid credentials';
+          default:
+            return 'Something went wring';
+      }
+    }
+    throw err;
+  }
+}
