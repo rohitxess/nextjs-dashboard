@@ -9,7 +9,7 @@ import { fetchInvoicesPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 
 // For adding custom metadat
-export const metadat: Metadata ={
+export const metadata: Metadata ={
   title: 'Invoices',
 }
  
